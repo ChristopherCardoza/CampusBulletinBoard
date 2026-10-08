@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.example.campusbulletinboard.screen.CreateAnnouncementScreen
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -73,7 +74,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             },
             entryProvider = entryProvider {
                 entry<Route.Create> {
-                    DestinationPlaceholder("Create")
+                    CreateAnnouncementScreen()
                 }
                 entry<Route.Preview> { preview ->
                     DestinationPlaceholder("${preview.title}\nPosted by ${preview.posterName}")
