@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -23,6 +24,7 @@ fun CreateAnnouncementScreen(
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var imageUrl by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -59,6 +61,20 @@ fun CreateAnnouncementScreen(
             supportingText = { Text("${description.length}/500") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
+            ),
+        )
+        OutlinedTextField(
+            value = imageUrl,
+            onValueChange = { imageUrl = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            label = { Text("Image URL") },
+            placeholder = { Text("https://example.com/poster.jpg") },
+            singleLine = true,
+            supportingText = { Text("Paste a direct link to an image") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
             ),
         )
     }
