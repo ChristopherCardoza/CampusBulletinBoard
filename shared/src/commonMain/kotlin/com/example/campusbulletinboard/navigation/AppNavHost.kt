@@ -91,6 +91,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                 entry<Route.Preview> { preview ->
                     AnnouncementPreviewScreen(
                         title = preview.title,
+                        description = preview.description,
                         imageUrl = preview.imageUrl,
                     )
                 }

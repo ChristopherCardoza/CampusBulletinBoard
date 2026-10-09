@@ -2,10 +2,14 @@ package com.example.campusbulletinboard.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,14 +27,32 @@ import coil3.compose.SubcomposeAsyncImage
 @Composable
 fun AnnouncementPreviewScreen(
     title: String,
+    description: String,
     imageUrl: String,
     modifier: Modifier = Modifier,
 ) {
-    AnnouncementHeroImage(
-        imageUrl = imageUrl,
-        contentDescription = title,
-        modifier = modifier.fillMaxWidth(),
-    )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        AnnouncementHeroImage(
+            imageUrl = imageUrl,
+            contentDescription = title,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            text = title,
+            modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        Text(
+            text = description,
+            modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @Composable
