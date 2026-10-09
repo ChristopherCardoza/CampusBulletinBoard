@@ -1,5 +1,11 @@
 package com.example.campusbulletinboard.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.metadata
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
@@ -88,7 +95,34 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                         },
                     )
                 }
-                entry<Route.Preview> { preview ->
+                entry<Route.Preview>(
+                    metadata = metadata {
+                        put(NavDisplay.TransitionKey) {
+                            (
+                                    slideInVertically(
+                                        initialOffsetY = { it / 4 },
+                                        animationSpec = tween(420),
+                                    ) + fadeIn(tween(420))
+                                    ) togetherWith fadeOut(tween(220))
+                        }
+                        put(NavDisplay.PopTransitionKey) {
+                            fadeIn(tween(220)) togetherWith (
+                                    slideOutVertically(
+                                        targetOffsetY = { it / 4 },
+                                        animationSpec = tween(420),
+                                    ) + fadeOut(tween(420))
+                                    )
+                        }
+                        put(NavDisplay.PredictivePopTransitionKey) {
+                            fadeIn(tween(220)) togetherWith (
+                                    slideOutVertically(
+                                        targetOffsetY = { it / 4 },
+                                        animationSpec = tween(420),
+                                    ) + fadeOut(tween(420))
+                                    )
+                        }
+                    },
+                ) { preview ->
                     AnnouncementPreviewScreen(
                         title = preview.title,
                         description = preview.description,

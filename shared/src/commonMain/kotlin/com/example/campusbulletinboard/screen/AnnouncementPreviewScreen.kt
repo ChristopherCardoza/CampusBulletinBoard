@@ -1,5 +1,8 @@
 package com.example.campusbulletinboard.screen
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +22,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
@@ -33,6 +42,9 @@ fun AnnouncementPreviewScreen(
     imageUrl: String,
     modifier: Modifier = Modifier,
 ) {
+    val cardReveal = rememberReveal(delayMillis = 40)
+    val titleReveal = rememberReveal(delayMillis = 160)
+    val descriptionReveal = rememberReveal(delayMillis = 260)
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -40,7 +52,15 @@ fun AnnouncementPreviewScreen(
             .padding(16.dp),
     ) {
         ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .graphicsLayer {
+                    alpha = cardReveal
+                    translationY = (1f - cardReveal) * 28.dp.toPx()
+                    val scale = 0.97f + (0.03f * cardReveal)
+                    scaleX = scale
+                    scaleY = scale
+                },
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -50,18 +70,26 @@ fun AnnouncementPreviewScreen(
             AnnouncementHeroImage(
                 imageUrl = imageUrl,
                 contentDescription = title,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .aspectRatio(3f / 2f),
+                modifier = Modifier.fillMaxWidth(),
             )
             Text(
                 text = title,
-                modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 20.dp, end = 20.dp)
+                    .graphicsLayer {
+                        alpha = titleReveal
+                        translationY = (1f - titleReveal) * 16.dp.toPx()
+                    },
                 style = MaterialTheme.typography.headlineMedium,
             )
             Text(
                 text = description,
-                modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp),
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp)
+                    .graphicsLayer {
+                        alpha = descriptionReveal
+                        translationY = (1f - descriptionReveal) * 16.dp.toPx()
+                    },
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -114,4 +142,20 @@ fun AnnouncementHeroImage(
             }
         },
     )
+}
+
+@Composable
+private fun rememberReveal(delayMillis: Int): Float {
+    var started by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { started = true }
+    val reveal by animateFloatAsState(
+        targetValue = if (started) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = 420,
+            delayMillis = delayMillis,
+            easing = FastOutSlowInEasing,
+        ),
+        label = "previewReveal",
+    )
+    return reveal
 }
