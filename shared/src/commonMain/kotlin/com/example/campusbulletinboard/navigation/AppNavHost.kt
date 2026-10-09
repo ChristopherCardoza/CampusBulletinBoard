@@ -147,7 +147,11 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                     )
                 }
                 entry<Route.Announcements> {
-                    AnnouncementListScreen()
+                    AnnouncementListScreen(
+                        onOpenChat = { announcementId ->
+                            navigate(Route.Chat(announcementId))
+                        },
+                    )
                 }
                 entry<Route.About> {
                     DestinationPlaceholder("About")

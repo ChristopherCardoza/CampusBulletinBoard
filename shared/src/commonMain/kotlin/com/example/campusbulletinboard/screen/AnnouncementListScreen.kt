@@ -1,10 +1,13 @@
 package com.example.campusbulletinboard.screen
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,12 +52,14 @@ import com.example.campusbulletinboard.state.currentBulletinBoardState
 
 @Composable
 fun AnnouncementListScreen(
+    onOpenChat: (announcementId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val board = currentBulletinBoardState()
     val announcements = board.announcements
     var titleQuery by rememberSaveable { mutableStateOf("") }
     var sortAscending by rememberSaveable { mutableStateOf(true) }
+    var expandedId by rememberSaveable { mutableStateOf<String?>(null) }
     val trimmedQuery = titleQuery.trim()
     val filteredAnnouncements = if (trimmedQuery.isEmpty()) {
         announcements
@@ -97,6 +103,15 @@ fun AnnouncementListScreen(
                     ) { announcement ->
                         AnnouncementRow(
                             announcement = announcement,
+                            expanded = expandedId == announcement.id,
+                            onToggle = {
+                                expandedId = if (expandedId == announcement.id) {
+                                    null
+                                } else {
+                                    announcement.id
+                                }
+                            },
+                            onOpenChat = { onOpenChat(announcement.id) },
                             onDelete = { board.deleteAnnouncement(announcement.id) },
                         )
                     }
@@ -190,60 +205,109 @@ private fun AnnouncementSortToggle(
 @Composable
 private fun AnnouncementRow(
     announcement: Announcement,
+    expanded: Boolean,
+    onToggle: () -> Unit,
+    onOpenChat: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow),
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .animateContentSize(),
     ) {
-        ListItem(
-            colors = ListItemDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            ),
-            leadingContent = {
-                AnnouncementThumbnail(
-                    imageUrl = announcement.imageUrl,
-                    contentDescription = announcement.title,
-                )
-            },
-            headlineContent = {
-                Text(
-                    text = announcement.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            },
-            supportingContent = {
-                Column {
+        if (expanded) {
+            ExpandedAnnouncement(
+                announcement = announcement,
+                onClick = onToggle,
+            )
+        } else {
+            ListItem(
+                modifier = Modifier.clickable(onClick = onToggle),
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                ),
+                leadingContent = {
+                    AnnouncementThumbnail(
+                        imageUrl = announcement.imageUrl,
+                        contentDescription = announcement.title,
+                    )
+                },
+                headlineContent = {
                     Text(
-                        text = announcement.description,
+                        text = announcement.title,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                    Text(
-                        text = announcement.posterName,
-                        modifier = Modifier.padding(top = 2.dp),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                }
-            },
-        )
-        IconButton(
-            onClick = onDelete,
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = "Delete ${announcement.title}",
-                tint = MaterialTheme.colorScheme.error,
+                },
+                supportingContent = {
+                    Column {
+                        Text(
+                            text = announcement.description,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = announcement.posterName,
+                            modifier = Modifier.padding(top = 2.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                },
             )
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 12.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                onClick = onDelete,
+                modifier = Modifier.padding(start = 4.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "Delete ${announcement.title}",
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+            if (expanded) {
+                Button(onClick = onOpenChat) {
+                    Text("Open Chat")
+                }
+            }
+        }
+    }
+}
+@Composable
+private fun ExpandedAnnouncement(
+    announcement: Announcement,
+    onClick: () -> Unit,
+) {
+    Column(modifier = Modifier.clickable(onClick = onClick)) {
+        AnnouncementHeroImage(
+            imageUrl = announcement.imageUrl,
+            contentDescription = announcement.title,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            text = announcement.title,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = announcement.description,
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
