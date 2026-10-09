@@ -3,7 +3,9 @@ package com.example.campusbulletinboard.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
@@ -157,7 +159,34 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                 entry<Route.About> {
                     DestinationPlaceholder("About")
                 }
-                entry<Route.Chat> { chat ->
+                entry<Route.Chat>(
+                    metadata = metadata {
+                        put(NavDisplay.TransitionKey) {
+                            (
+                                    slideInHorizontally(
+                                        initialOffsetX = { it },
+                                        animationSpec = tween(420),
+                                    ) + fadeIn(tween(420))
+                                    ) togetherWith fadeOut(tween(220))
+                        }
+                        put(NavDisplay.PopTransitionKey) {
+                            fadeIn(tween(220)) togetherWith (
+                                    slideOutHorizontally(
+                                        targetOffsetX = { it },
+                                        animationSpec = tween(420),
+                                    ) + fadeOut(tween(420))
+                                    )
+                        }
+                        put(NavDisplay.PredictivePopTransitionKey) {
+                            fadeIn(tween(220)) togetherWith (
+                                    slideOutHorizontally(
+                                        targetOffsetX = { it },
+                                        animationSpec = tween(420),
+                                    ) + fadeOut(tween(420))
+                                    )
+                        }
+                    },
+                ) { chat ->
                     ChatScreen(announcementId = chat.announcementId)
                 }
             },
