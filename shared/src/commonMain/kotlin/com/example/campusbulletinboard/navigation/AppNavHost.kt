@@ -75,13 +75,13 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             entryProvider = entryProvider {
                 entry<Route.Create> {
                     CreateAnnouncementScreen(
-                        onSubmit = { title, description, imageUrl ->
+                        onSubmit = { draft ->
                             navigate(
                                 Route.Preview(
-                                    title = title,
-                                    description = description,
-                                    imageUrl = imageUrl,
-                                    posterName = "Student",
+                                    title = draft.title,
+                                    description = draft.description,
+                                    imageUrl = draft.imageUrl,
+                                    posterName = draft.posterName,
                                 ),
                             )
                         },

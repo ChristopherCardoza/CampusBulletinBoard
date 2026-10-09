@@ -35,10 +35,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlin.coroutines.cancellation.CancellationException
+import com.example.campusbulletinboard.model.AnnouncementDraft
 
 @Composable
 fun CreateAnnouncementScreen(
-    onSubmit: (title: String, description: String, imageUrl: String) -> Unit,
+    onSubmit: (AnnouncementDraft) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var title by remember { mutableStateOf("") }
@@ -218,7 +219,13 @@ fun CreateAnnouncementScreen(
                 val invalidImageUrl = !trimmedImageUrl.isWebImageLink()
                 showUrlError = invalidImageUrl
                 if (!invalidImageUrl) {
-                    onSubmit(trimmedTitle, trimmedDescription, trimmedImageUrl)
+                    onSubmit(
+                        AnnouncementDraft(
+                            title = trimmedTitle,
+                            description = trimmedDescription,
+                            imageUrl = trimmedImageUrl,
+                        ),
+                    )
                 }
             },
             modifier = Modifier
