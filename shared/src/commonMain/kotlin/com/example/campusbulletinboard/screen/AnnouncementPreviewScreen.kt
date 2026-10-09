@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -40,6 +41,7 @@ fun AnnouncementPreviewScreen(
     title: String,
     description: String,
     imageUrl: String,
+    onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val cardReveal = rememberReveal(delayMillis = 40)
@@ -85,7 +87,7 @@ fun AnnouncementPreviewScreen(
             Text(
                 text = description,
                 modifier = Modifier
-                    .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp)
+                    .padding(start = 20.dp, top = 8.dp, end = 20.dp)
                     .graphicsLayer {
                         alpha = descriptionReveal
                         translationY = (1f - descriptionReveal) * 16.dp.toPx()
@@ -93,6 +95,14 @@ fun AnnouncementPreviewScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Button(
+                onClick = onConfirm,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 20.dp),
+            ) {
+                Text("Confirm")
+            }
         }
     }
 }

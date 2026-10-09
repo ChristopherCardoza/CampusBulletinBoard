@@ -23,6 +23,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.campusbulletinboard.screen.AnnouncementPreviewScreen
 import com.example.campusbulletinboard.screen.CreateAnnouncementScreen
+import com.example.campusbulletinboard.state.currentBulletinBoardState
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -44,6 +45,7 @@ private val routeSavedStateConfiguration = SavedStateConfiguration {
 @Composable
 fun AppNavHost(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(routeSavedStateConfiguration, Route.Create)
+    val board = currentBulletinBoardState()
     val currentRoute = backStack.lastOrNull() as? Route ?: Route.Create
 
     fun showTopLevel(route: Route) {
@@ -127,6 +129,15 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                         title = preview.title,
                         description = preview.description,
                         imageUrl = preview.imageUrl,
+                        onConfirm = {
+                            board.addAnnouncement(
+                                title = preview.title,
+                                description = preview.description,
+                                imageUrl = preview.imageUrl,
+                                posterName = preview.posterName,
+                            )
+                            navigate(Route.Announcements)
+                        },
                     )
                 }
                 entry<Route.Announcements> {
