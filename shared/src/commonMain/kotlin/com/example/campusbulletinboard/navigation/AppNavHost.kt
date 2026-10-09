@@ -74,7 +74,18 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             },
             entryProvider = entryProvider {
                 entry<Route.Create> {
-                    CreateAnnouncementScreen()
+                    CreateAnnouncementScreen(
+                        onSubmit = { title, description, imageUrl ->
+                            navigate(
+                                Route.Preview(
+                                    title = title,
+                                    description = description,
+                                    imageUrl = imageUrl,
+                                    posterName = "Student",
+                                ),
+                            )
+                        },
+                    )
                 }
                 entry<Route.Preview> { preview ->
                     DestinationPlaceholder("${preview.title}\nPosted by ${preview.posterName}")

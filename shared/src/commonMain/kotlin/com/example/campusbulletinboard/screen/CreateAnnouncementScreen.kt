@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -37,6 +38,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun CreateAnnouncementScreen(
+    onSubmit: (title: String, description: String, imageUrl: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var title by remember { mutableStateOf("") }
@@ -169,6 +171,16 @@ fun CreateAnnouncementScreen(
                     )
                 }
             }
+        }
+        Button(
+            onClick = {
+                onSubmit(title.trim(), description.trim(), imageUrl.trim())
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
+        ) {
+            Text("Submit")
         }
 
     }
