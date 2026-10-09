@@ -21,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,25 +83,31 @@ fun ChatScreen(
                 }
             }
             ChatInputBar(
-                onSend = { text ->
+                onSend = { text, sender ->
                     board.addMessage(
                         announcementId = announcementId,
-                        sender = Sender.Visitor,
-                        senderName = "Visitor",
+                        sender = sender,
+                        senderName = if (sender == Sender.Poster) {
+                            announcement.posterName
+                        } else {
+                            "Visitor"
+                        },
                         text = text,
                     )
                 },
             )
-                }
-            }
+
+
         }
+    }
+}
 
 @Composable
 private fun MessageBubble(message: Message) {
     val isPoster = message.sender == Sender.Poster
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if (isPoster) Alignment.End else Alignment.Start,
+        horizontalAlignment = if (isPoster) Alignment.Start else Alignment.End,
     ) {
         Text(
             text = message.senderName,
@@ -112,8 +121,8 @@ private fun MessageBubble(message: Message) {
             shape = RoundedCornerShape(
                 topStart = 16.dp,
                 topEnd = 16.dp,
-                bottomStart = if (isPoster) 16.dp else 4.dp,
-                bottomEnd = if (isPoster) 4.dp else 16.dp,
+                bottomStart = if (isPoster) 4.dp else 16.dp,
+                bottomEnd = if (isPoster) 16.dp else 4.dp,
             ),
             color = if (isPoster) {
                 MaterialTheme.colorScheme.primaryContainer
@@ -172,43 +181,68 @@ private fun MissingAnnouncement(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ChatInputBar(
-    onSend: (String) -> Unit,
+    onSend: (text: String, sender: Sender) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text by rememberSaveable { mutableStateOf("") }
-
+    var sendingAsPoster by rememberSaveable { mutableStateOf(false) }
     fun send() {
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return
-        onSend(trimmed)
+        val sender = if (sendingAsPoster) Sender.Poster else Sender.Visitor
+        onSend(trimmed, sender)
         text = ""
     }
-
-    HorizontalDivider()
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .imePadding()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .imePadding(),
     ) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            modifier = Modifier.weight(1f),
-            placeholder = { Text("Message") },
-            maxLines = 4,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions(onSend = { send() }),
-        )
-        IconButton(
-            onClick = ::send,
-            enabled = text.isNotBlank(),
+        HorizontalDivider()
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, top = 8.dp, end = 12.dp),
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Send",
+            SegmentedButton(
+                selected = sendingAsPoster,
+                onClick = { sendingAsPoster = true },
+                shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                modifier = Modifier.weight(1f),
+                label = { Text("Poster") },
             )
+            SegmentedButton(
+                selected = !sendingAsPoster,
+                onClick = { sendingAsPoster = false },
+                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                modifier = Modifier.weight(1f),
+                label = { Text("Visitor") },
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("Message") },
+                maxLines = 4,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                keyboardActions = KeyboardActions(onSend = { send() }),
+            )
+            IconButton(
+                onClick = ::send,
+                enabled = text.isNotBlank(),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = "Send",
+                )
+            }
         }
     }
 }
