@@ -9,6 +9,13 @@ import com.example.campusbulletinboard.model.Announcement
 import com.example.campusbulletinboard.model.Message
 import com.example.campusbulletinboard.model.Sender
 
+/**
+ * In-memory board: announcements and the messages posted on them.
+ *
+ * Ids are assigned in order for the life of this object. Deleting an announcement
+ * also deletes its messages. [ProvideBulletinBoardState] holds one instance in
+ * composition, and [currentBulletinBoardState] reads it from descendant composables.
+ */
 class BulletinBoardState {
     private val messagesState = mutableStateListOf<Message>()
     private var nextId = 1L

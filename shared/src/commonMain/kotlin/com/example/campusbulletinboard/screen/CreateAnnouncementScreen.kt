@@ -38,6 +38,14 @@ import coil3.compose.AsyncImage
 import kotlin.coroutines.cancellation.CancellationException
 import com.example.campusbulletinboard.model.AnnouncementDraft
 
+/**
+ * Form for a new announcement: title, description, and an image.
+ *
+ * The image can be pasted as an http or https URL, or picked from a Picsum row
+ * loaded by [loadPicsumImages]. Submit trims the fields, requires all three,
+ * checks the URL shape with [isWebImageLink], then passes an [com.example.campusbulletinboard.model.AnnouncementDraft]
+ * to [onSubmit].
+ */
 @Composable
 fun CreateAnnouncementScreen(
     onSubmit: (AnnouncementDraft) -> Unit,

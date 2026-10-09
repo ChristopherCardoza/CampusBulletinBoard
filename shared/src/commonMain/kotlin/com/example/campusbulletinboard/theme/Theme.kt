@@ -34,7 +34,12 @@ private val CampusBulletinBoardColorScheme = darkColorScheme(
     surfaceContainerLow = Surface,
     surfaceContainerLowest = Surface,
 )
-
+/**
+ * Material 3 theme for Campus Bulletin Board.
+ *
+ * Maps the colors in [Color.kt] onto a dark [androidx.compose.material3.ColorScheme]
+ * and applies it through [androidx.compose.material3.MaterialTheme].
+ */
 @Composable
 fun CampusBulletinBoardTheme(content: @Composable () -> Unit) {
     MaterialTheme(

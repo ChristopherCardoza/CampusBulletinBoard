@@ -47,6 +47,14 @@ private val routeSavedStateConfiguration = SavedStateConfiguration {
     }
 }
 
+/**
+ * Owns the back stack and shows the screen for the current [Route].
+ *
+ * Tapping a bottom-bar destination replaces the single top-level entry.
+ * Preview and Chat are pushed on top of that entry and pop on back.
+ * Confirming a preview saves the announcement and opens the Announcements tab.
+ * Preview slides in vertically; Chat slides in from the side.
+ */
 @Composable
 fun AppNavHost(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(routeSavedStateConfiguration, Route.Create)

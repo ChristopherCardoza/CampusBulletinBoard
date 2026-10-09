@@ -47,6 +47,15 @@ import com.example.campusbulletinboard.model.Message
 import com.example.campusbulletinboard.model.Sender
 import com.example.campusbulletinboard.state.currentBulletinBoardState
 
+/**
+ * Message thread for one announcement.
+ *
+ * Shows the announcement title, then that announcement's messages.
+ * Poster bubbles align to the start; visitor bubbles align to the end.
+ * Messages sent while this screen is open animate in. The input bar can send
+ * as the poster (using the announcement's poster name) or as "Visitor".
+ * A missing announcement shows a short unavailable message instead of the thread.
+ */
 @Composable
 fun ChatScreen(
     announcementId: String,

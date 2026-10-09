@@ -3,6 +3,13 @@ package com.example.campusbulletinboard.theme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+/**
+ * App palette and the vertical gradients built from it.
+ *
+ * [Background], [Surface], [Secondary], [Primary], and [Accent] are the raw colors.
+ * [SurfaceToBackground], [PrimaryToSecondary], and [AccentToPrimary] are brushes
+ * for full-screen and accent fills.
+ */
 val Background = Color(0xFF061A23)
 val Surface = Color(0xFF06373A)
 val Secondary = Color(0xFF1F5F5B)

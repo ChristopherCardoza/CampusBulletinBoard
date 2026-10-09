@@ -50,6 +50,13 @@ import coil3.compose.SubcomposeAsyncImage
 import com.example.campusbulletinboard.model.Announcement
 import com.example.campusbulletinboard.state.currentBulletinBoardState
 
+/**
+ * Announcements tab: search, sort, expand, delete, and open chat.
+ *
+ * Titles can be filtered and sorted A–Z or Z–A. A collapsed row shows a thumbnail,
+ * title, description, and poster. Expanding it shows [AnnouncementHeroImage] and an
+ * Open Chat action. An empty board and a search with no matches each have their own message.
+ */
 @Composable
 fun AnnouncementListScreen(
     onOpenChat: (announcementId: String) -> Unit,

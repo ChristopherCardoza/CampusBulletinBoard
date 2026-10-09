@@ -65,6 +65,13 @@ private val Route.title: String
         is Route.Chat -> "Messages"
     }
 
+/**
+ * App chrome: a centered top bar and a three-item bottom navigation bar.
+ *
+ * The bar lists Create, Announcements, and About. Preview stays under Create,
+ * and Chat stays under Announcements, so the parent tab stays selected.
+ * The top-bar title comes from the current [Route].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold(

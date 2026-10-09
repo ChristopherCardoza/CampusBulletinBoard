@@ -6,6 +6,13 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+/**
+ * A photo from the Picsum list API, plus the request that loads a page of them.
+ *
+ * [PicsumImage.thumbnailUrl] is the small picker image.
+ * [PicsumImage.imageUrl] is the larger URL stored on an announcement.
+ * [loadPicsumImages] fetches page 3 (12 photos) through [com.example.campusbulletinboard.network.AppHttpClient].
+ */
 @Serializable
 data class PicsumImage(
     val id: String,

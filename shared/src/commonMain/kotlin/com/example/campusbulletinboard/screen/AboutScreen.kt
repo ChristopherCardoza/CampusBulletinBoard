@@ -55,6 +55,11 @@ private val featuredAnnouncements = listOf(
     ),
 )
 
+/**
+ * About tab: a short description of the app, two sample announcements, and a purpose card.
+ *
+ * The featured posts are static content. They are not stored on [com.example.campusbulletinboard.state.BulletinBoardState].
+ */
 @Composable
 fun AboutScreen(modifier: Modifier = Modifier) {
     val primary = MaterialTheme.colorScheme.primary

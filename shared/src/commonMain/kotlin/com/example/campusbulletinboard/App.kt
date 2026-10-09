@@ -12,7 +12,13 @@ import coil3.request.crossfade
 import com.example.campusbulletinboard.network.AppHttpClient
 import com.example.campusbulletinboard.theme.CampusBulletinBoardTheme
 
-
+/**
+ * Root composable for Campus Bulletin Board.
+ *
+ * Installs the shared Coil image loader (backed by [com.example.campusbulletinboard.network.AppHttpClient]),
+ * then wraps the navigation graph in [com.example.campusbulletinboard.theme.CampusBulletinBoardTheme]
+ * and [com.example.campusbulletinboard.state.ProvideBulletinBoardState].
+ */
 @Composable
 @Preview
 fun App() {

@@ -39,6 +39,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 
+/**
+ * Read-only preview of an announcement before it is posted.
+ *
+ * The card, title, and description fade and rise in sequence. Edit returns to the
+ * form; Confirm is handled by the caller, which saves the announcement.
+ * [AnnouncementHeroImage] is the shared wide image used by preview, the list, and About.
+ */
 @Composable
 fun AnnouncementPreviewScreen(
     title: String,
