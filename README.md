@@ -1,37 +1,27 @@
-This is a Kotlin Multiplatform project targeting Android, Web.
+# Campus Bulletin Board
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Campus Bulletin Board is a shared place for students to post campus news and talk about a specific post. You write an announcement, preview it, and add it to the board. Each post keeps its own message thread.
 
-### Running the apps
+Announcements and messages stay in memory for the current session. Closing the app clears the board.
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
+## Using the app
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- Web app:
-  - Wasm target (faster, modern browsers): `./gradlew :webApp:wasmJsBrowserDevelopmentRun`
-  - JS target (slower, supports older browsers): `./gradlew :webApp:jsBrowserDevelopmentRun`
+The bottom bar has three tabs.
 
-### Running tests
+**Create.** Enter a title, a description, and an image. Paste an `http` or `https` link, or pick a photo from the row loaded from Picsum. Submit opens a preview. Confirm adds the post to the board and switches to Announcements. Edit returns to the form. The poster name is "Student".
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
+**Announcements.** Browse posts on the board. Search by title, and sort A–Z or Z–A. Tap a row to expand it. Open Chat starts that post's thread. Delete removes the post and its messages.
 
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- Web tests:
-  - Wasm target: `./gradlew :shared:wasmJsTest`
-  - JS target: `./gradlew :shared:jsTest`
+**About.** A short description of the app, plus two sample posts that are not on the board.
 
----
+In a chat, choose Poster or Visitor, type a message, and send. Poster messages use the announcement's poster name. Visitor messages are labeled "Visitor".
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://kotlinlang.org/compose-multiplatform/),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## Running it
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+This is a Kotlin Multiplatform project with an Android app and a web app. Shared UI lives in `shared`.
+
+- Android: `./gradlew :androidApp:assembleDebug`
+- Web (Wasm): `./gradlew :webApp:wasmJsBrowserDevelopmentRun`
+- Web (JavaScript): `./gradlew :webApp:jsBrowserDevelopmentRun`
+
+On Windows, use `gradlew` instead of `./gradlew`. You can also launch the run configurations from the IDE toolbar.
