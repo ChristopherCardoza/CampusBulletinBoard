@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.example.campusbulletinboard.screen.AnnouncementPreviewScreen
 import com.example.campusbulletinboard.screen.CreateAnnouncementScreen
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
@@ -88,7 +89,10 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                     )
                 }
                 entry<Route.Preview> { preview ->
-                    DestinationPlaceholder("${preview.title}\nPosted by ${preview.posterName}")
+                    AnnouncementPreviewScreen(
+                        title = preview.title,
+                        imageUrl = preview.imageUrl,
+                    )
                 }
                 entry<Route.Announcements> {
                     DestinationPlaceholder("Announcements")
