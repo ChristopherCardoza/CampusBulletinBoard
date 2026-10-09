@@ -23,6 +23,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.campusbulletinboard.screen.AnnouncementListScreen
 import com.example.campusbulletinboard.screen.AnnouncementPreviewScreen
+import com.example.campusbulletinboard.screen.ChatScreen
 import com.example.campusbulletinboard.screen.CreateAnnouncementScreen
 import com.example.campusbulletinboard.state.currentBulletinBoardState
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -157,7 +158,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                     DestinationPlaceholder("About")
                 }
                 entry<Route.Chat> { chat ->
-                    DestinationPlaceholder("Chat ${chat.announcementId}")
+                    ChatScreen(announcementId = chat.announcementId)
                 }
             },
         )
