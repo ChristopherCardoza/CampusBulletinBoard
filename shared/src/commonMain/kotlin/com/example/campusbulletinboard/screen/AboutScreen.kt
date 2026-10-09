@@ -36,12 +36,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.campusbulletinboard.theme.SurfaceToBackground
 
+/**
+ * Static sample post shown on the About tab.
+ *
+ * [title], [description], and [imageUrl] are display-only. These posts are not added to the board.
+ */
 private data class FeaturedAnnouncement(
     val title: String,
     val description: String,
     val imageUrl: String,
 )
 
+/**
+ * The two sample posts rendered under the About copy: library hours and the club fair.
+ */
 private val featuredAnnouncements = listOf(
     FeaturedAnnouncement(
         title = "Library hours this week",
@@ -130,6 +138,9 @@ fun AboutScreen(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Elevated card for one [FeaturedAnnouncement]: wide image, title, then description.
+ */
 @Composable
 private fun FeaturedAnnouncementCard(
     announcement: FeaturedAnnouncement,
@@ -162,6 +173,11 @@ private fun FeaturedAnnouncementCard(
     }
 }
 
+/**
+ * Elevated card with a leading icon, a title, and a body paragraph.
+ *
+ * Used for the "About the app" and "Purpose" sections.
+ */
 @Composable
 private fun InfoCard(
     icon: ImageVector,

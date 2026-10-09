@@ -123,6 +123,12 @@ fun ChatScreen(
     }
 }
 
+/**
+ * One message in the thread.
+ *
+ * Poster messages align to the start and use the primary container color. Visitor messages align to the end.
+ * When [animateEntrance] is true, the bubble fades and slides in the first time it is shown.
+ */
 @Composable
 private fun MessageBubble(
     message: Message,
@@ -181,6 +187,9 @@ private fun MessageBubble(
     }
 }
 
+/**
+ * Centered "No messages yet" state for an announcement that has an empty thread.
+ */
 @Composable
 private fun EmptyChat(modifier: Modifier = Modifier) {
     Column(
@@ -198,6 +207,9 @@ private fun EmptyChat(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Centered message shown when the chat route's announcement id is no longer on the board.
+ */
 @Composable
 private fun MissingAnnouncement(modifier: Modifier = Modifier) {
     Column(
@@ -216,6 +228,12 @@ private fun MissingAnnouncement(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Composer at the bottom of the thread.
+ *
+ * A segmented control chooses Poster or Visitor. Send is enabled only when the field is not blank.
+ * [onSend] receives the trimmed text and the selected [com.example.campusbulletinboard.model.Sender], then the field is cleared.
+ */
 @Composable
 private fun ChatInputBar(
     onSend: (text: String, sender: Sender) -> Unit,

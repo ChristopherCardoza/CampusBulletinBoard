@@ -247,6 +247,11 @@ fun CreateAnnouncementScreen(
     }
 }
 
+/**
+ * Returns true when this string is an http or https URL with a real host and no spaces.
+ *
+ * The host must be `localhost` or contain a dot. Anything after the host, including a path or query, is ignored.
+ */
 private fun String.isWebImageLink(): Boolean {
     val value = trim()
     val scheme = when {

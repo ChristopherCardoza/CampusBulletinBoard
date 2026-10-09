@@ -129,6 +129,12 @@ fun AnnouncementPreviewScreen(
     }
 }
 
+/**
+ * Wide cropped image shared by the preview, an expanded list row, and About's sample cards.
+ *
+ * The image is a 3:2 crop with rounded bottom corners. A spinner fills the frame while it loads.
+ * If the load fails, the frame shows an info icon and "Image unavailable".
+ */
 @Composable
 fun AnnouncementHeroImage(
     imageUrl: String,
@@ -176,6 +182,11 @@ fun AnnouncementHeroImage(
     )
 }
 
+/**
+ * Fades a value from 0 to 1 once, after this composable enters composition.
+ *
+ * The animation runs for 420ms with [delayMillis] before it starts. Callers use the result for alpha, slide, and scale.
+ */
 @Composable
 private fun rememberReveal(delayMillis: Int): Float {
     var started by remember { mutableStateOf(false) }

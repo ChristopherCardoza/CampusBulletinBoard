@@ -22,6 +22,11 @@ data class PicsumImage(
     val imageUrl: String get() = "https://picsum.photos/seed/campus$id/1200/800"
 }
 
+/**
+ * JSON parser for the Picsum list response.
+ *
+ * Unknown fields are ignored so decoding only needs [PicsumImage.id] and [PicsumImage.author].
+ */
 private val picsumJson = Json { ignoreUnknownKeys = true }
 
 suspend fun loadPicsumImages(): List<PicsumImage> {

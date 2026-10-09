@@ -128,6 +128,11 @@ fun AnnouncementListScreen(
     }
 }
 
+/**
+ * Single-line search field that filters announcement titles.
+ *
+ * Shows a clear button while [query] is not empty. The search action on the keyboard does not submit a separate query.
+ */
 @Composable
 private fun AnnouncementTitleFilter(
     query: String,
@@ -163,6 +168,9 @@ private fun AnnouncementTitleFilter(
     )
 }
 
+/**
+ * Centered message shown when the board has announcements but none match the current title filter.
+ */
 @Composable
 private fun NoMatchingAnnouncements(modifier: Modifier = Modifier) {
     Column(
@@ -185,6 +193,11 @@ private fun NoMatchingAnnouncements(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * A–Z / Z–A control for title sort order.
+ *
+ * [ascending] selects A–Z. The other segment selects Z–A and reports that through [onAscendingChange].
+ */
 @Composable
 private fun AnnouncementSortToggle(
     ascending: Boolean,
@@ -209,6 +222,13 @@ private fun AnnouncementSortToggle(
     }
 }
 
+/**
+ * One announcement in the list.
+ *
+ * Collapsed, it is a list row with a thumbnail, title, description, and poster name.
+ * Expanded, it shows the wide image plus an Open Chat button. Delete is available in both states.
+ * Tapping the row calls [onToggle].
+ */
 @Composable
 private fun AnnouncementRow(
     announcement: Announcement,
@@ -293,6 +313,12 @@ private fun AnnouncementRow(
         }
     }
 }
+
+/**
+ * Expanded body of an announcement row: wide image, title, and full description.
+ *
+ * Tapping it calls [onClick], which the row uses to collapse.
+ */
 @Composable
 private fun ExpandedAnnouncement(
     announcement: Announcement,
@@ -318,6 +344,11 @@ private fun ExpandedAnnouncement(
     }
 }
 
+/**
+ * 72dp cropped thumbnail for a collapsed announcement row.
+ *
+ * Shows a spinner while the image loads and an info icon if the load fails.
+ */
 @Composable
 private fun AnnouncementThumbnail(
     imageUrl: String,
@@ -357,6 +388,9 @@ private fun AnnouncementThumbnail(
     )
 }
 
+/**
+ * Centered empty state for a board that has no announcements yet.
+ */
 @Composable
 private fun EmptyAnnouncementList(modifier: Modifier = Modifier) {
     Column(
