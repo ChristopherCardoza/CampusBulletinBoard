@@ -1,5 +1,9 @@
 package com.example.campusbulletinboard.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,8 +31,10 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +55,9 @@ fun ChatScreen(
     val board = currentBulletinBoardState()
     val announcement = board.announcement(announcementId)
     val messages = board.messagesFor(announcementId)
+    val shownOnArrival = remember(announcementId) {
+        messages.map { it.id }.toSet()
+    }
 
     if (announcement == null) {
         MissingAnnouncement(modifier)
@@ -78,7 +87,10 @@ fun ChatScreen(
                         items = messages,
                         key = { it.id },
                     ) { message ->
-                        MessageBubble(message)
+                        MessageBubble(
+                            message = message,
+                            animateEntrance = message.id !in shownOnArrival,
+                        )
                     }
                 }
             }
@@ -103,43 +115,59 @@ fun ChatScreen(
 }
 
 @Composable
-private fun MessageBubble(message: Message) {
+private fun MessageBubble(
+    message: Message,
+    animateEntrance: Boolean,
+) {
     val isPoster = message.sender == Sender.Poster
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if (isPoster) Alignment.Start else Alignment.End,
-    ) {
-        Text(
-            text = message.senderName,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Surface(
-            modifier = Modifier
-                .padding(top = 4.dp)
-                .widthIn(max = 280.dp),
-            shape = RoundedCornerShape(
-                topStart = 16.dp,
-                topEnd = 16.dp,
-                bottomStart = if (isPoster) 4.dp else 16.dp,
-                bottomEnd = if (isPoster) 16.dp else 4.dp,
-            ),
-            color = if (isPoster) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
+    var visible by rememberSaveable(message.id) { mutableStateOf(!animateEntrance) }
+    LaunchedEffect(message.id) { visible = true }
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(tween(280)) + slideInHorizontally(
+            animationSpec = tween(280),
+            initialOffsetX = { fullWidth ->
+                if (isPoster) -fullWidth / 4 else fullWidth / 4
             },
+        ),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = if (isPoster) Alignment.Start else Alignment.End,
         ) {
             Text(
-                text = message.text,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (isPoster) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                text = message.senderName,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Surface(
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .widthIn(max = 280.dp),
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = if (isPoster) 4.dp else 16.dp,
+                    bottomEnd = if (isPoster) 16.dp else 4.dp,
+                ),
+                color = if (isPoster) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+            ) {
+                Text(
+                    text = message.text,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (isPoster) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                )
+            }
         }
     }
 }
