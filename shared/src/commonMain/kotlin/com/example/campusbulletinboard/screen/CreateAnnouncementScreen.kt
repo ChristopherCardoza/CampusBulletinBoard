@@ -49,6 +49,7 @@ fun CreateAnnouncementScreen(
     var imagesError by remember { mutableStateOf<String?>(null) }
     var reloadKey by remember { mutableIntStateOf(0) }
     var showRequiredErrors by remember { mutableStateOf(false) }
+    var showUrlError by remember { mutableStateOf(false) }
 
     LaunchedEffect(reloadKey) {
         imagesLoading = true
@@ -130,13 +131,14 @@ fun CreateAnnouncementScreen(
             label = { Text("Image URL") },
             placeholder = { Text("https://example.com/poster.jpg") },
             singleLine = true,
-            isError = showRequiredErrors && imageUrl.isBlank(),
+            isError = (showRequiredErrors && imageUrl.isBlank()) ||
+                    (showUrlError && imageUrl.isNotBlank()),
             supportingText = {
                 Text(
-                    if (showRequiredErrors && imageUrl.isBlank()) {
-                        "Image is required"
-                    } else {
-                        "Paste a direct link to an image"
+                    when {
+                        showRequiredErrors && imageUrl.isBlank() -> "Image is required"
+                        showUrlError && imageUrl.isNotBlank() -> "Enter a link that starts with http:// or https://"
+                        else -> "Paste a direct link to an image"
                     },
                 )
             },
@@ -209,7 +211,13 @@ fun CreateAnnouncementScreen(
                         trimmedDescription.isBlank() ||
                         trimmedImageUrl.isBlank()
                 showRequiredErrors = missingRequiredField
-                if (!missingRequiredField) {
+                if (missingRequiredField) {
+                    showUrlError = false
+                    return@Button
+                }
+                val invalidImageUrl = !trimmedImageUrl.isWebImageLink()
+                showUrlError = invalidImageUrl
+                if (!invalidImageUrl) {
                     onSubmit(trimmedTitle, trimmedDescription, trimmedImageUrl)
                 }
             },
@@ -221,4 +229,19 @@ fun CreateAnnouncementScreen(
         }
 
     }
+}
+
+private fun String.isWebImageLink(): Boolean {
+    val value = trim()
+    val scheme = when {
+        value.startsWith("https://", ignoreCase = true) -> "https://"
+        value.startsWith("http://", ignoreCase = true) -> "http://"
+        else -> return false
+    }
+    if (value.any { it.isWhitespace() }) return false
+    val host = value.substring(scheme.length)
+        .substringBefore('/')
+        .substringBefore('?')
+        .substringBefore('#')
+    return host.isNotBlank() && (host == "localhost" || '.' in host)
 }
