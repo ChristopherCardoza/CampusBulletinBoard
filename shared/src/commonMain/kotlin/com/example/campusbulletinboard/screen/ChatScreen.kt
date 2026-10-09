@@ -3,20 +3,34 @@ package com.example.campusbulletinboard.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -65,9 +79,19 @@ fun ChatScreen(
                     }
                 }
             }
+            ChatInputBar(
+                onSend = { text ->
+                    board.addMessage(
+                        announcementId = announcementId,
+                        sender = Sender.Visitor,
+                        senderName = "Visitor",
+                        text = text,
+                    )
+                },
+            )
+                }
+            }
         }
-    }
-}
 
 @Composable
 private fun MessageBubble(message: Message) {
@@ -143,5 +167,48 @@ private fun MissingAnnouncement(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+@Composable
+private fun ChatInputBar(
+    onSend: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var text by rememberSaveable { mutableStateOf("") }
+
+    fun send() {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return
+        onSend(trimmed)
+        text = ""
+    }
+
+    HorizontalDivider()
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .imePadding()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            modifier = Modifier.weight(1f),
+            placeholder = { Text("Message") },
+            maxLines = 4,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+            keyboardActions = KeyboardActions(onSend = { send() }),
+        )
+        IconButton(
+            onClick = ::send,
+            enabled = text.isNotBlank(),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = "Send",
+            )
+        }
     }
 }
