@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,7 +50,8 @@ import com.example.campusbulletinboard.state.currentBulletinBoardState
 fun AnnouncementListScreen(
     modifier: Modifier = Modifier,
 ) {
-    val announcements = currentBulletinBoardState().announcements
+    val board = currentBulletinBoardState()
+    val announcements = board.announcements
     var titleQuery by rememberSaveable { mutableStateOf("") }
     var sortAscending by rememberSaveable { mutableStateOf(true) }
     val trimmedQuery = titleQuery.trim()
@@ -65,6 +67,7 @@ fun AnnouncementListScreen(
     } else {
         filteredAnnouncements.sortedByDescending { it.title.lowercase() }
     }
+
 
     if (announcements.isEmpty()) {
         EmptyAnnouncementList(modifier)
@@ -92,7 +95,10 @@ fun AnnouncementListScreen(
                         items = sortedAnnouncements,
                         key = { it.id },
                     ) { announcement ->
-                        AnnouncementRow(announcement)
+                        AnnouncementRow(
+                            announcement = announcement,
+                            onDelete = { board.deleteAnnouncement(announcement.id) },
+                        )
                     }
                 }
             }
@@ -182,45 +188,63 @@ private fun AnnouncementSortToggle(
 }
 
 @Composable
-private fun AnnouncementRow(announcement: Announcement) {
-    ListItem(
-        modifier = Modifier.clip(RoundedCornerShape(16.dp)),
-        colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        ),
-        leadingContent = {
-            AnnouncementThumbnail(
-                imageUrl = announcement.imageUrl,
-                contentDescription = announcement.title,
-            )
-        },
-        headlineContent = {
-            Text(
-                text = announcement.title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleMedium,
-            )
-        },
-        supportingContent = {
-            Column {
+private fun AnnouncementRow(
+    announcement: Announcement,
+    onDelete: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow),
+    ) {
+        ListItem(
+            colors = ListItemDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+            leadingContent = {
+                AnnouncementThumbnail(
+                    imageUrl = announcement.imageUrl,
+                    contentDescription = announcement.title,
+                )
+            },
+            headlineContent = {
                 Text(
-                    text = announcement.description,
+                    text = announcement.title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleMedium,
                 )
-                Text(
-                    text = announcement.posterName,
-                    modifier = Modifier.padding(top = 2.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
-        },
-    )
+            },
+            supportingContent = {
+                Column {
+                    Text(
+                        text = announcement.description,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = announcement.posterName,
+                        modifier = Modifier.padding(top = 2.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+            },
+        )
+        IconButton(
+            onClick = onDelete,
+            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = "Delete ${announcement.title}",
+                tint = MaterialTheme.colorScheme.error,
+            )
+        }
+    }
 }
 
 @Composable
