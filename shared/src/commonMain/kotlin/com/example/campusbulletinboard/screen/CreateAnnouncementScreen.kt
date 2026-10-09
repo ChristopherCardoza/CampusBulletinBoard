@@ -48,7 +48,7 @@ fun CreateAnnouncementScreen(
     var imagesLoading by remember { mutableStateOf(true) }
     var imagesError by remember { mutableStateOf<String?>(null) }
     var reloadKey by remember { mutableIntStateOf(0) }
-
+    var showRequiredErrors by remember { mutableStateOf(false) }
 
     LaunchedEffect(reloadKey) {
         imagesLoading = true
@@ -83,10 +83,20 @@ fun CreateAnnouncementScreen(
             label = { Text("Title") },
             placeholder = { Text("Club meeting, lost item, campus event") },
             singleLine = true,
-            supportingText = { Text("${title.length}/80") },
+            isError = showRequiredErrors && title.isBlank(),
+            supportingText = {
+                Text(
+                    if (showRequiredErrors && title.isBlank()) {
+                        "Title is required"
+                    } else {
+                        "${title.length}/80"
+                    },
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
             ),
+
         )
         OutlinedTextField(
             value = description,
@@ -97,7 +107,16 @@ fun CreateAnnouncementScreen(
             label = { Text("Description") },
             placeholder = { Text("When, where, and what students should know") },
             minLines = 4,
-            supportingText = { Text("${description.length}/500") },
+            isError = showRequiredErrors && description.isBlank(),
+            supportingText = {
+                Text(
+                    if (showRequiredErrors && description.isBlank()) {
+                        "Description is required"
+                    } else {
+                        "${description.length}/500"
+                    },
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
             ),
@@ -111,7 +130,16 @@ fun CreateAnnouncementScreen(
             label = { Text("Image URL") },
             placeholder = { Text("https://example.com/poster.jpg") },
             singleLine = true,
-            supportingText = { Text("Paste a direct link to an image") },
+            isError = showRequiredErrors && imageUrl.isBlank(),
+            supportingText = {
+                Text(
+                    if (showRequiredErrors && imageUrl.isBlank()) {
+                        "Image is required"
+                    } else {
+                        "Paste a direct link to an image"
+                    },
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Uri,
             ),
@@ -174,7 +202,16 @@ fun CreateAnnouncementScreen(
         }
         Button(
             onClick = {
-                onSubmit(title.trim(), description.trim(), imageUrl.trim())
+                val trimmedTitle = title.trim()
+                val trimmedDescription = description.trim()
+                val trimmedImageUrl = imageUrl.trim()
+                val missingRequiredField = trimmedTitle.isBlank() ||
+                        trimmedDescription.isBlank() ||
+                        trimmedImageUrl.isBlank()
+                showRequiredErrors = missingRequiredField
+                if (!missingRequiredField) {
+                    onSubmit(trimmedTitle, trimmedDescription, trimmedImageUrl)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
