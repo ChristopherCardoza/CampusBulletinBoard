@@ -12,7 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,24 +36,36 @@ fun AnnouncementPreviewScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
     ) {
-        AnnouncementHeroImage(
-            imageUrl = imageUrl,
-            contentDescription = title,
+        ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-        )
-        Text(
-            text = title,
-            modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = description,
-            modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        ) {
+            AnnouncementHeroImage(
+                imageUrl = imageUrl,
+                contentDescription = title,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .aspectRatio(3f / 2f),
+            )
+            Text(
+                text = title,
+                modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Text(
+                text = description,
+                modifier = Modifier.padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 24.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
