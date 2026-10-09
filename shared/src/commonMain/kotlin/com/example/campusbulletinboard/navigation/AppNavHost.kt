@@ -138,6 +138,11 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                             )
                             navigate(Route.Announcements)
                         },
+                        onEdit = {
+                            if (backStack.size > 1) {
+                                backStack.removeAt(backStack.lastIndex)
+                            }
+                        },
                     )
                 }
                 entry<Route.Announcements> {

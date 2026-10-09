@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,9 +43,9 @@ fun CreateAnnouncementScreen(
     onSubmit: (AnnouncementDraft) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var imageUrl by remember { mutableStateOf("") }
+    var title by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
+    var imageUrl by rememberSaveable { mutableStateOf("") }
     var images by remember { mutableStateOf<List<PicsumImage>>(emptyList()) }
     var imagesLoading by remember { mutableStateOf(true) }
     var imagesError by remember { mutableStateOf<String?>(null) }
