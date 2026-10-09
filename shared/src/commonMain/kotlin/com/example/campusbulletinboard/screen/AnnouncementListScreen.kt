@@ -12,13 +12,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -32,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -44,35 +50,110 @@ fun AnnouncementListScreen(
     modifier: Modifier = Modifier,
 ) {
     val announcements = currentBulletinBoardState().announcements
+    var titleQuery by rememberSaveable { mutableStateOf("") }
     var sortAscending by rememberSaveable { mutableStateOf(true) }
-    val sortedAnnouncements = if (sortAscending) {
-        announcements.sortedBy { it.title.lowercase() }
+    val trimmedQuery = titleQuery.trim()
+    val filteredAnnouncements = if (trimmedQuery.isEmpty()) {
+        announcements
     } else {
-        announcements.sortedByDescending { it.title.lowercase() }
+        announcements.filter { announcement ->
+            announcement.title.contains(trimmedQuery, ignoreCase = true)
+        }
+    }
+    val sortedAnnouncements = if (sortAscending) {
+        filteredAnnouncements.sortedBy { it.title.lowercase() }
+    } else {
+        filteredAnnouncements.sortedByDescending { it.title.lowercase() }
     }
 
-    if (sortedAnnouncements.isEmpty()) {
+    if (announcements.isEmpty()) {
         EmptyAnnouncementList(modifier)
     } else {
         Column(modifier = modifier.fillMaxSize()) {
+            AnnouncementTitleFilter(
+                query = titleQuery,
+                onQueryChange = { titleQuery = it },
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+            )
             AnnouncementSortToggle(
                 ascending = sortAscending,
                 onAscendingChange = { sortAscending = it },
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(
-                    items = sortedAnnouncements,
-                    key = { it.id },
-                ) { announcement ->
-                    AnnouncementRow(announcement)
+            if (sortedAnnouncements.isEmpty()) {
+                NoMatchingAnnouncements(Modifier.fillMaxSize())
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(
+                        items = sortedAnnouncements,
+                        key = { it.id },
+                    ) { announcement ->
+                        AnnouncementRow(announcement)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun AnnouncementTitleFilter(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier.fillMaxWidth(),
+        label = { Text("Search titles") },
+        placeholder = { Text("Filter by title") },
+        singleLine = true,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = null,
+            )
+        },
+        trailingIcon = if (query.isNotEmpty()) {
+            {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = "Clear search",
+                    )
+                }
+            }
+        } else {
+            null
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+    )
+}
+
+@Composable
+private fun NoMatchingAnnouncements(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "No announcements match",
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = "Try a different title.",
+            modifier = Modifier.padding(top = 8.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
