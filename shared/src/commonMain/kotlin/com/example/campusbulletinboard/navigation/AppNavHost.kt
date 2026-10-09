@@ -23,6 +23,7 @@ import androidx.navigation3.runtime.metadata
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.example.campusbulletinboard.screen.AboutScreen
 import com.example.campusbulletinboard.screen.AnnouncementListScreen
 import com.example.campusbulletinboard.screen.AnnouncementPreviewScreen
 import com.example.campusbulletinboard.screen.ChatScreen
@@ -157,7 +158,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                     )
                 }
                 entry<Route.About> {
-                    DestinationPlaceholder("About")
+                    AboutScreen()
                 }
                 entry<Route.Chat>(
                     metadata = metadata {
