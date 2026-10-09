@@ -77,6 +77,7 @@ fun AppScaffold(
 
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(currentRoute.title) },

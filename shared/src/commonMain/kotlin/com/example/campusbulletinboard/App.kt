@@ -10,6 +10,7 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import com.example.campusbulletinboard.network.AppHttpClient
+import com.example.campusbulletinboard.theme.CampusBulletinBoardTheme
 
 
 @Composable
@@ -23,7 +24,7 @@ fun App() {
             .crossfade(true)
             .build()
     }
-    MaterialTheme {
+    CampusBulletinBoardTheme {
         ProvideBulletinBoardState {
             AppNavHost()
         }

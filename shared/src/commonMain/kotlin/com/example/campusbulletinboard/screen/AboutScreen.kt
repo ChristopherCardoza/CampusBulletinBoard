@@ -34,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.campusbulletinboard.theme.SurfaceToBackground
 
 private data class FeaturedAnnouncement(
     val title: String,
@@ -72,15 +73,7 @@ fun AboutScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .drawBehind {
-                drawRect(
-                    brush = Brush.linearGradient(
-                        colors = listOf(primary, secondary, tertiary),
-                        start = Offset(size.width * (drift - 0.5f), 0f),
-                        end = Offset(size.width * (drift + 0.5f), size.height),
-                    ),
-                )
-            },
+            .background(SurfaceToBackground),
     ) {
         Column(
             modifier = Modifier
